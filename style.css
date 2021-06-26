@@ -1,0 +1,29 @@
+@keyframes example {
+  0% {
+    border-color: #f5cb42;
+    border-width: 0px;
+  }
+  3% {
+    border-width: 2px;
+    border-top-width: 20px;
+    border-color: #f5cb42;
+  }
+  98% {
+    border-top-width: 20px;
+    border-color: #f5cb42;
+  }
+  99% {
+    border-top-width: 2px;
+    border-color: #f5cb42;
+  }
+
+  100% {
+    border-color: transparent;
+  }
+}
+
+#box {
+  animation-fill-mode: both;
+  border: 2px solid transparent;
+  animation: example 2s ease;
+}

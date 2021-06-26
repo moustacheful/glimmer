@@ -1,0 +1,18 @@
+[package]
+name = "glint"
+version = "0.1.0"
+authors = ["Daniel Acuna <4857535+moustacheful@users.noreply.github.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+gtk = "0.14.0"
+gdk = "0.14.0"
+cairo-rs = "0.14.0"
+glib = "0.14.0"
+tokio-i3ipc = "0.12.1"
+tokio = "1.7.1"
+tokio-stream = "0.1.6"
+actix = "0.12"
+actix-rt = "1.1"
