@@ -25,5 +25,8 @@
 #box {
   animation-fill-mode: both;
   border: 2px solid transparent;
-  animation: example 2s ease;
+}
+
+.animate {
+  animation: example 1s ease;
 }

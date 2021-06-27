@@ -46,14 +46,15 @@ pub fn build_window() -> Window {
     });
 
     let b = gtk::BoxBuilder::new().name("box").build();
+    b.style_context().add_class("animate");
+
     let screen = gdk::Screen::default().unwrap();
     let visual = screen
         .rgba_visual()
         .expect("No RGBA supported -- this utility makes no sense without it");
 
-    b.set_visual(gtk::glib::bitflags::_core::option::Option::Some(&visual));
-
     window.add(&b);
+    window.set_visual(Some(&visual));
 
     return window;
 }
