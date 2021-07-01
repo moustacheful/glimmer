@@ -1,6 +1,11 @@
+use std::collections::HashMap;
+
 use cairo::{RectangleInt, Region};
+use glib::Sender;
 use gtk::prelude::*;
 use gtk::{Window, WindowType};
+
+use crate::actors::glint_instance::Geometry;
 
 const MAIN_WINDOW_TITLE: &str = "HIGHLIGHTER";
 
@@ -20,7 +25,12 @@ pub fn setup() {
     gtk::StyleContext::add_provider_for_screen(&screen, &css_provider, 1);
 }
 
-pub fn build_window() -> Window {
+pub fn update_window_position(window: &Window, geometry: Geometry) {
+    window.resize(geometry.width, geometry.height);
+    window.move_(geometry.x, geometry.y);
+}
+
+pub fn build_window(id: usize, geometry: Geometry) -> Window {
     let window = Window::new(WindowType::Popup);
     window.set_title(MAIN_WINDOW_TITLE);
     window.set_default_size(1, 1);
@@ -55,6 +65,58 @@ pub fn build_window() -> Window {
 
     window.add(&b);
     window.set_visual(Some(&visual));
+    update_window_position(&window, geometry);
+    window.show_all();
 
     return window;
+}
+
+#[derive(Debug)]
+pub struct WindowShim {
+    pub id: usize,
+    pub label: Option<String>,
+    pub geometry: Geometry,
+}
+
+#[derive(Debug)]
+pub enum Messages {
+    Create(WindowShim),
+    Update(WindowShim),
+    Destroy(usize),
+    None,
+}
+
+pub fn handle_messages() -> Sender<Messages> {
+    let ctx = glib::MainContext::default();
+    let _guard = ctx.acquire();
+
+    let (sender, receiver) = glib::MainContext::channel::<Messages>(glib::PRIORITY_DEFAULT);
+    let mut windows: HashMap<usize, Window> = HashMap::new();
+
+    receiver.attach(None, move |msg| {
+        match msg {
+            Messages::Create(w) => match windows.insert(w.id, build_window(w.id, w.geometry)) {
+                Some(old_window) => old_window.close(),
+                _ => {}
+            },
+            Messages::Update(w) => match windows.get(&w.id) {
+                Some(window) => {
+                    update_window_position(&window, w.geometry);
+                }
+                None => {}
+            },
+            Messages::Destroy(id) => match windows.remove(&id) {
+                Some(w) => {
+                    w.close();
+                }
+                None => {}
+            },
+
+            _ => {}
+        }
+
+        glib::Continue(true)
+    });
+
+    return sender;
 }
