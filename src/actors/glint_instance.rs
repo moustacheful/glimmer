@@ -1,7 +1,9 @@
-use crate::gtk_utils;
+use super::glint_manager::{GlintManager, WindowDataMsg};
+use crate::gtk_utils::{Messages, WindowShim};
 use actix::prelude::*;
-use gtk::prelude::*;
-use gtk::Window;
+use glib::Sender;
+use tokio_i3ipc::event::WindowChange;
+use tokio_i3ipc::reply::Rect;
 
 #[derive(Debug)]
 pub struct Geometry {
@@ -13,53 +15,96 @@ pub struct Geometry {
 
 #[derive(Debug, Message)]
 #[rtype(result = "()")]
-pub struct CreateDecorationMsg {
-    pub label: String,
-    pub geometry: Geometry,
-}
+pub struct DismountMsg {}
 
 #[derive(Debug, Message)]
 #[rtype(result = "()")]
-pub struct DismountMsg {}
+pub struct InstanceKillNotificationMsg {
+    pub id: usize,
+}
 
 // Actor definition
 pub struct GlintInstance {
     pub id: usize,
-    window: Option<Window>,
+    sender: Sender<Messages>,
+    manager: Addr<GlintManager>,
+    kill_handle: Option<SpawnHandle>,
 }
 
 impl Actor for GlintInstance {
     type Context = Context<Self>;
 
     fn stopped(&mut self, _ctx: &mut Self::Context) {
-        match &self.window {
-            Some(window) => {
-                window.close();
-            }
-            None => { /* NOOP */ }
-        }
+        // Let the manager know the instance died for cleanup
+        self.manager
+            .do_send(InstanceKillNotificationMsg { id: self.id });
+        // Also destroy the window
+        self.sender.send(Messages::Destroy(self.id)).unwrap();
     }
 }
 
 impl GlintInstance {
-    pub fn new(id: usize) -> Self {
-        Self { id, window: None }
+    pub fn new(id: usize, sender: Sender<Messages>, manager: Addr<GlintManager>) -> Self {
+        Self {
+            id,
+            sender,
+            kill_handle: None,
+            manager,
+        }
     }
 }
 
-impl Handler<CreateDecorationMsg> for GlintInstance {
+impl From<Rect> for Geometry {
+    fn from(rect: Rect) -> Geometry {
+        Geometry {
+            x: rect.x as i32,
+            y: rect.y as i32,
+            width: rect.width as i32,
+            height: rect.height as i32,
+        }
+    }
+}
+
+impl From<WindowDataMsg> for WindowShim {
+    fn from(window_data: WindowDataMsg) -> WindowShim {
+        let rect = window_data.container.rect;
+        WindowShim {
+            id: window_data.container.id,
+            label: window_data.container.name,
+            geometry: rect.into(),
+        }
+    }
+}
+
+impl From<WindowDataMsg> for usize {
+    fn from(window_data: WindowDataMsg) -> usize {
+        window_data.container.id
+    }
+}
+
+impl Handler<WindowDataMsg> for GlintInstance {
     type Result = ();
 
-    fn handle(&mut self, msg: CreateDecorationMsg, ctx: &mut Context<Self>) {
-        let window = gtk_utils::build_window();
-        let geometry = msg.geometry;
+    fn handle(&mut self, msg: WindowDataMsg, ctx: &mut Context<Self>) {
+        let message: Messages = match msg.change {
+            WindowChange::Focus => Messages::Create(msg.into()),
+            WindowChange::Close => Messages::Destroy(msg.into()),
+            WindowChange::Move => Messages::Update(msg.into()),
+            WindowChange::FullscreenMode => Messages::Update(msg.into()),
 
-        window.resize(geometry.width, geometry.height);
-        window.move_(geometry.x, geometry.y);
-        window.show_all();
+            _m => Messages::None,
+        };
 
-        self.window = Some(window);
-        ctx.notify_later(DismountMsg {}, std::time::Duration::new(2, 0));
+        self.sender.send(message).unwrap();
+
+        match self.kill_handle {
+            Some(handle) => {
+                ctx.cancel_future(handle);
+            }
+            None => {}
+        }
+
+        self.kill_handle = Some(ctx.notify_later(DismountMsg {}, std::time::Duration::new(2, 0)));
     }
 }
 
