@@ -1,13 +1,12 @@
-use std::collections::HashMap;
-
 use cairo::{RectangleInt, Region};
 use glib::Sender;
 use gtk::prelude::*;
 use gtk::{Window, WindowType};
+use std::collections::HashMap;
 
 use crate::actors::glint_instance::Geometry;
 
-const MAIN_WINDOW_TITLE: &str = "HIGHLIGHTER";
+const MAIN_WINDOW_TITLE: &str = "__GLINT_WINDOW__";
 
 pub fn setup() {
     let css_provider = gtk::CssProvider::new();
@@ -26,11 +25,27 @@ pub fn setup() {
 }
 
 pub fn update_window_position(window: &Window, geometry: Geometry) {
+    let children = window.children();
+    let fixed = children
+        .first()
+        .unwrap()
+        .downcast_ref::<gtk::Fixed>()
+        .unwrap();
+
+    let fixed_children = fixed.children();
+    let b = fixed_children
+        .first()
+        .unwrap()
+        .downcast_ref::<gtk::Box>()
+        .unwrap();
+
+    b.set_size_request(geometry.width, geometry.height);
+
     window.resize(geometry.width, geometry.height);
     window.move_(geometry.x, geometry.y);
 }
 
-pub fn build_window(id: usize, geometry: Geometry) -> Window {
+pub fn build_window(label_string: &str, geometry: Geometry) -> Window {
     let window = Window::new(WindowType::Popup);
     window.set_title(MAIN_WINDOW_TITLE);
     window.set_default_size(1, 1);
@@ -55,17 +70,27 @@ pub fn build_window(id: usize, geometry: Geometry) -> Window {
         return gtk::Inhibit(false);
     });
 
+    let container = gtk::FixedBuilder::new().name("container").build();
     let b = gtk::BoxBuilder::new().name("box").build();
-    b.style_context().add_class("animate");
+
+    container.style_context().add_class("animate");
+    let label = gtk::LabelBuilder::new()
+        .name("label")
+        .label(label_string)
+        .build();
+
+    container.add(&b);
+    container.add(&label);
+    window.add(&container);
+
+    update_window_position(&window, geometry);
 
     let screen = gdk::Screen::default().unwrap();
     let visual = screen
         .rgba_visual()
         .expect("No RGBA supported -- this utility makes no sense without it");
 
-    window.add(&b);
     window.set_visual(Some(&visual));
-    update_window_position(&window, geometry);
     window.show_all();
 
     return window;
@@ -95,10 +120,15 @@ pub fn handle_messages() -> Sender<Messages> {
 
     receiver.attach(None, move |msg| {
         match msg {
-            Messages::Create(w) => match windows.insert(w.id, build_window(w.id, w.geometry)) {
-                Some(old_window) => old_window.close(),
-                _ => {}
-            },
+            Messages::Create(w) => {
+                match windows.insert(
+                    w.id,
+                    build_window(&w.label.unwrap_or(String::from("")), w.geometry),
+                ) {
+                    Some(old_window) => old_window.close(),
+                    _ => {}
+                }
+            }
             Messages::Update(w) => match windows.get(&w.id) {
                 Some(window) => {
                     update_window_position(&window, w.geometry);

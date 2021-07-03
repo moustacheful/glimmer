@@ -3,16 +3,16 @@
     border-color: #f5cb42;
     border-width: 0px;
   }
-  3% {
+  5% {
     border-width: 2px;
     border-top-width: 20px;
     border-color: #f5cb42;
   }
-  98% {
+  90% {
     border-top-width: 20px;
     border-color: #f5cb42;
   }
-  99% {
+  95% {
     border-top-width: 2px;
     border-color: #f5cb42;
   }
@@ -27,6 +27,31 @@
   border: 2px solid transparent;
 }
 
-.animate {
-  animation: example 2s ease;
+@keyframes label {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 0;
+  }
+}
+
+.animate #box {
+  animation: example 1.5s ease;
+}
+
+#label {
+  color: black;
+  opacity: 0;
+  margin-left: 5px;
+}
+
+.animate #label {
+  animation: label 1.5s ease;
 }
