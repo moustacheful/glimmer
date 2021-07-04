@@ -8,9 +8,9 @@ use crate::actors::glint_instance::Geometry;
 
 const MAIN_WINDOW_TITLE: &str = "__GLINT_WINDOW__";
 
-pub fn setup() {
+pub fn setup(styles_path: String) {
     let css_provider = gtk::CssProvider::new();
-    let data = std::fs::read("./style.css").expect("Could not read css file!");
+    let data = std::fs::read(styles_path).expect("Could not read css file!");
     css_provider
         .load_from_data(&data)
         .expect("Could not load css into GTK");
@@ -73,7 +73,6 @@ pub fn build_window(label_string: &str, geometry: Geometry) -> Window {
     let container = gtk::FixedBuilder::new().name("container").build();
     let b = gtk::BoxBuilder::new().name("box").build();
 
-    container.style_context().add_class("animate");
     let label = gtk::LabelBuilder::new()
         .name("label")
         .label(label_string)
@@ -92,6 +91,8 @@ pub fn build_window(label_string: &str, geometry: Geometry) -> Window {
 
     window.set_visual(Some(&visual));
     window.show_all();
+
+    container.style_context().add_class("animate");
 
     return window;
 }

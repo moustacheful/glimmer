@@ -1,12 +1,23 @@
 use actix::prelude::*;
 use actors::glint_manager::AttachSenderMsg;
+use clap::{AppSettings, Clap};
 use std::thread;
 mod actors;
 mod gtk_utils;
 
+#[derive(Clap)]
+#[clap(version = "0.0.1")]
+#[clap(setting = AppSettings::ColoredHelp)]
+struct Opts {
+    #[clap(short, long, default_value = "./style.css")]
+    styles: String,
+}
+
 fn main() {
+    let opts = Opts::parse();
+
     gtk::init().expect("Failed to initialize GTK.");
-    gtk_utils::setup();
+    gtk_utils::setup(opts.styles);
 
     let sender = gtk_utils::handle_messages();
 
