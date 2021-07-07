@@ -4,6 +4,9 @@
 A tool for decorating i3 (_should_ work with Sway too!) windows when they get focused, written in Rust.
 
 
+https://user-images.githubusercontent.com/4857535/124782646-61e90a80-df12-11eb-8930-a321ecffbee1.mp4
+
+
 ## Why
 
 When using i3-gaps I ran into the following problems.
@@ -52,3 +55,8 @@ A simple example for this, animated using transitions:
   opacity: 0; // Hide the label
 }
 ```
+
+This will produce the following
+
+https://user-images.githubusercontent.com/4857535/124782792-8349f680-df12-11eb-8231-4a356d33f066.mp4
+
