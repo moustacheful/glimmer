@@ -31,7 +31,7 @@ cargo build && cargo run
 
 ## Running and customizing
 
-By default this application should use the `style.css` in the root of the repo, but you can provide your own suing the `--styles` arg and providing a path to your own styles.
+By default this application should use the `style.css` in the root of the repo, but you can provide your own using the `--styles` arg and providing a path to your own styles.
 
 The css file dictates how the window decorations look like, and they have 2 elements to customize, `#box` which represents the boundaries of the window and `#label`, which has the window title. Additionally, there's an `.animate` class applied to the parent which can help triggering animations for both the box and label.
 
