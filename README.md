@@ -52,7 +52,7 @@ A simple example for this, animated using transitions:
 }
 
 #label {
-  opacity: 0; // Hide the label
+  opacity: 0; /* Hide the label */
 }
 ```
 
