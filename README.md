@@ -1,4 +1,5 @@
 # glint ?
+name will likely change, since it seems there's another package under the same name in crates.io :)
 
 ## What 
 A tool for decorating i3 (_should_ work with Sway too!) windows when they get focused, written in Rust.
