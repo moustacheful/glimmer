@@ -112,6 +112,15 @@ pub enum Messages {
     None,
 }
 
+// TODO: remove me in favor of adding classes representing state
+pub fn destroy_other_windows(windows: &mut HashMap<usize, Window>, selected_id: &usize) {
+    let keys: Vec<usize> = windows.keys().cloned().collect();
+
+    keys.iter()
+        .filter(|&key| selected_id != key)
+        .for_each(|key| windows.remove(&key).unwrap().close());
+}
+
 pub fn handle_messages() -> Sender<Messages> {
     let ctx = glib::MainContext::default();
     let _guard = ctx.acquire();
@@ -122,6 +131,7 @@ pub fn handle_messages() -> Sender<Messages> {
     receiver.attach(None, move |msg| {
         match msg {
             Messages::Create(w) => {
+                destroy_other_windows(&mut windows, &w.id);
                 match windows.insert(
                     w.id,
                     build_window(&w.label.unwrap_or(String::from("")), w.geometry),
@@ -130,12 +140,14 @@ pub fn handle_messages() -> Sender<Messages> {
                     _ => {}
                 }
             }
+
             Messages::Update(w) => match windows.get(&w.id) {
                 Some(window) => {
                     update_window_position(&window, w.geometry);
                 }
                 None => {}
             },
+
             Messages::Destroy(id) => match windows.remove(&id) {
                 Some(w) => {
                     w.close();
