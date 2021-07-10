@@ -1,5 +1,5 @@
 [package]
-name = "glint"
+name = "glimmer"
 version = "0.0.1"
 authors = ["Daniel Acuna <4857535+moustacheful@users.noreply.github.com>"]
 edition = "2018"

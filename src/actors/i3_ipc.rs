@@ -7,7 +7,7 @@ use tokio_i3ipc::{
 };
 use tokio_stream::StreamExt;
 
-use super::glint_manager::{GlintManager, WindowDataMsg};
+use super::glimmer_manager::{GlimmerManager, WindowDataMsg};
 pub struct I3Ipc {}
 
 trait Find<T> {
@@ -43,9 +43,10 @@ impl Find<Node> for Node {
 // impl Find for Node {}
 
 async fn i3_subscribe() -> io::Result<()> {
-    let addr = GlintManager::from_registry();
+    let addr = GlimmerManager::from_registry();
 
     let mut i3 = I3::connect().await?;
+    // There must be a better way of doing this instead of using two clients?
     let mut i32 = I3::connect().await?;
 
     i3.subscribe([Subscribe::Window]).await?;
@@ -72,7 +73,7 @@ async fn i3_subscribe() -> io::Result<()> {
 }
 
 impl Actor for I3Ipc {
-    type Context = Context<Self>;
+    type Context = Context<Sz1elf>;
 
     fn started(&mut self, _ctx: &mut Context<Self>) {
         // TODO: handle abort, on actor stop?

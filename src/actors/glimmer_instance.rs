@@ -1,4 +1,4 @@
-use super::glint_manager::{GlintManager, WindowDataMsg};
+use super::glimmer_manager::{GlimmerManager, WindowDataMsg};
 use crate::gtk_utils::{Messages, WindowShim};
 use actix::prelude::*;
 use glib::Sender;
@@ -24,14 +24,14 @@ pub struct InstanceKillNotificationMsg {
 }
 
 // Actor definition
-pub struct GlintInstance {
+pub struct GlimmerInstance {
     pub id: usize,
     sender: Sender<Messages>,
-    manager: Addr<GlintManager>,
+    manager: Addr<GlimmerManager>,
     kill_handle: Option<SpawnHandle>,
 }
 
-impl Actor for GlintInstance {
+impl Actor for GlimmerInstance {
     type Context = Context<Self>;
 
     fn stopped(&mut self, _ctx: &mut Self::Context) {
@@ -43,8 +43,8 @@ impl Actor for GlintInstance {
     }
 }
 
-impl GlintInstance {
-    pub fn new(id: usize, sender: Sender<Messages>, manager: Addr<GlintManager>) -> Self {
+impl GlimmerInstance {
+    pub fn new(id: usize, sender: Sender<Messages>, manager: Addr<GlimmerManager>) -> Self {
         Self {
             id,
             sender,
@@ -82,7 +82,7 @@ impl From<WindowDataMsg> for usize {
     }
 }
 
-impl Handler<WindowDataMsg> for GlintInstance {
+impl Handler<WindowDataMsg> for GlimmerInstance {
     type Result = ();
 
     fn handle(&mut self, msg: WindowDataMsg, ctx: &mut Context<Self>) {
@@ -108,7 +108,7 @@ impl Handler<WindowDataMsg> for GlintInstance {
     }
 }
 
-impl Handler<DismountMsg> for GlintInstance {
+impl Handler<DismountMsg> for GlimmerInstance {
     type Result = ();
 
     fn handle(&mut self, _msg: DismountMsg, ctx: &mut Self::Context) -> Self::Result {

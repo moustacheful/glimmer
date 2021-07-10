@@ -1,5 +1,5 @@
 use actix::prelude::*;
-use actors::glint_manager::AttachSenderMsg;
+use actors::glimmer_manager::AttachSenderMsg;
 use clap::{AppSettings, Clap};
 use std::thread;
 mod actors;
@@ -25,7 +25,7 @@ fn main() {
         let system = System::new();
 
         system.block_on(async {
-            let manager = actors::glint_manager::GlintManager::from_registry();
+            let manager = actors::glimmer_manager::GlimmerManager::from_registry();
             manager.do_send(AttachSenderMsg { sender });
 
             actors::i3_ipc::I3Ipc {}.start();
