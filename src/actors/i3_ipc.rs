@@ -73,7 +73,7 @@ async fn i3_subscribe() -> io::Result<()> {
 }
 
 impl Actor for I3Ipc {
-    type Context = Context<Sz1elf>;
+    type Context = Context<Self>;
 
     fn started(&mut self, _ctx: &mut Context<Self>) {
         // TODO: handle abort, on actor stop?
