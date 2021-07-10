@@ -1,4 +1,4 @@
-use super::glint_instance::{GlintInstance, InstanceKillNotificationMsg};
+use super::glimmer_instance::{GlimmerInstance, InstanceKillNotificationMsg};
 use actix::{prelude::*, WeakAddr};
 use glib::Sender;
 use std::collections::HashMap;
@@ -20,13 +20,13 @@ pub struct AttachSenderMsg {
 
 // Actor definition
 #[derive(Default)]
-pub struct GlintManager {
-    instances: HashMap<usize, actix::WeakAddr<GlintInstance>>,
+pub struct GlimmerManager {
+    instances: HashMap<usize, actix::WeakAddr<GlimmerInstance>>,
     sender: Option<Sender<crate::gtk_utils::Messages>>,
 }
 
-impl Supervised for GlintManager {}
-impl SystemService for GlintManager {
+impl Supervised for GlimmerManager {}
+impl SystemService for GlimmerManager {
     fn start_service(_wrk: &ArbiterHandle) -> Addr<Self> {
         Self {
             instances: HashMap::new(),
@@ -35,20 +35,20 @@ impl SystemService for GlintManager {
         .start()
     }
 }
-impl Actor for GlintManager {
+impl Actor for GlimmerManager {
     type Context = Context<Self>;
 }
 
-impl GlintManager {
+impl GlimmerManager {
     pub fn get_instance(
         &mut self,
         msg: &WindowDataMsg,
         self_address: Addr<Self>,
-    ) -> &WeakAddr<GlintInstance> {
+    ) -> &WeakAddr<GlimmerInstance> {
         let id = msg.container.id;
         let sender = self.sender.clone().unwrap();
         let instance = self.instances.entry(id).or_insert_with(|| {
-            GlintInstance::new(id, sender, self_address)
+            GlimmerInstance::new(id, sender, self_address)
                 .start()
                 .downgrade()
         });
@@ -57,7 +57,7 @@ impl GlintManager {
     }
 }
 
-impl Handler<WindowDataMsg> for GlintManager {
+impl Handler<WindowDataMsg> for GlimmerManager {
     type Result = ();
 
     fn handle(&mut self, msg: WindowDataMsg, ctx: &mut Context<Self>) {
@@ -72,7 +72,7 @@ impl Handler<WindowDataMsg> for GlintManager {
     }
 }
 
-impl Handler<InstanceKillNotificationMsg> for GlintManager {
+impl Handler<InstanceKillNotificationMsg> for GlimmerManager {
     type Result = ();
 
     fn handle(
@@ -84,7 +84,7 @@ impl Handler<InstanceKillNotificationMsg> for GlintManager {
     }
 }
 
-impl Handler<AttachSenderMsg> for GlintManager {
+impl Handler<AttachSenderMsg> for GlimmerManager {
     type Result = ();
 
     fn handle(&mut self, msg: AttachSenderMsg, _ctx: &mut Self::Context) -> Self::Result {

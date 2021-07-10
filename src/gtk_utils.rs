@@ -4,9 +4,9 @@ use gtk::prelude::*;
 use gtk::{Window, WindowType};
 use std::collections::HashMap;
 
-use crate::actors::glint_instance::Geometry;
+use crate::actors::glimmer_instance::Geometry;
 
-const MAIN_WINDOW_TITLE: &str = "__GLINT_WINDOW__";
+const MAIN_WINDOW_TITLE: &str = "__GLIMMER_WINDOW__";
 
 pub fn setup(styles_path: String) {
     let css_provider = gtk::CssProvider::new();
