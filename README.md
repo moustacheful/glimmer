@@ -19,6 +19,7 @@ Eventually I gave up and continued using vanilla i3 instead, but had this idea f
 
 ## Requirements
 
+- Rust v1.5x, currently only tested with **v1.53.0**
 - A compositor, since it literally draws windows on top of your windows.
 - GTK needs to be on your system to build this application, follow the instructions [here](https://crates.io/crates/gtk)
 
