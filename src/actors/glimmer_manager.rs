@@ -53,7 +53,7 @@ impl GlimmerManager {
                 .downgrade()
         });
 
-        return instance;
+        instance
     }
 }
 
@@ -63,11 +63,8 @@ impl Handler<WindowDataMsg> for GlimmerManager {
     fn handle(&mut self, msg: WindowDataMsg, ctx: &mut Context<Self>) {
         let instance = self.get_instance(&msg, ctx.address());
 
-        match instance.upgrade() {
-            Some(addr) => {
-                addr.do_send(msg);
-            }
-            None => { /*noop*/ }
+        if let Some(addr) = instance.upgrade() {
+            addr.do_send(msg);
         }
     }
 }

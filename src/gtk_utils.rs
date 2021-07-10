@@ -67,7 +67,7 @@ pub fn build_window(label_string: &str, geometry: Geometry) -> Window {
             .unwrap()
             .input_shape_combine_region(&region, 0, 0);
 
-        return gtk::Inhibit(false);
+        gtk::Inhibit(false)
     });
 
     let container = gtk::FixedBuilder::new().name("container").build();
@@ -94,7 +94,7 @@ pub fn build_window(label_string: &str, geometry: Geometry) -> Window {
 
     container.style_context().add_class("animate");
 
-    return window;
+    window
 }
 
 #[derive(Debug)]
@@ -132,28 +132,26 @@ pub fn handle_messages() -> Sender<Messages> {
         match msg {
             Messages::Create(w) => {
                 destroy_other_windows(&mut windows, &w.id);
-                match windows.insert(
+
+                if let Some(old_window) = windows.insert(
                     w.id,
-                    build_window(&w.label.unwrap_or(String::from("")), w.geometry),
+                    build_window(&w.label.unwrap_or_else(|| String::from("")), w.geometry),
                 ) {
-                    Some(old_window) => old_window.close(),
-                    _ => {}
+                    old_window.close();
                 }
             }
 
-            Messages::Update(w) => match windows.get(&w.id) {
-                Some(window) => {
+            Messages::Update(w) => {
+                if let Some(window) = windows.get(&w.id) {
                     update_window_position(&window, w.geometry);
                 }
-                None => {}
-            },
+            }
 
-            Messages::Destroy(id) => match windows.remove(&id) {
-                Some(w) => {
-                    w.close();
+            Messages::Destroy(id) => {
+                if let Some(window) = windows.remove(&id) {
+                    window.close();
                 }
-                None => {}
-            },
+            }
 
             _ => {}
         }
@@ -161,5 +159,5 @@ pub fn handle_messages() -> Sender<Messages> {
         glib::Continue(true)
     });
 
-    return sender;
+    sender
 }

@@ -27,16 +27,13 @@ impl Find<Node> for Node {
         let mut result: Option<Node> = None;
 
         for n in self.nodes {
-            match n.find_node(id) {
-                Some(found) => {
-                    result = Some(found);
-                    break;
-                }
-                _ => {}
+            if let Some(found) = n.find_node(id) {
+                result = Some(found);
+                break;
             }
         }
 
-        return result;
+        result
     }
 }
 
@@ -53,19 +50,16 @@ async fn i3_subscribe() -> io::Result<()> {
 
     let mut listener = i3.listen();
     while let Some(evt) = listener.next().await {
-        match evt? {
-            Event::Window(window_evt) => {
-                let tree = i32.get_tree().await?;
-                let found = tree
-                    .find_node(window_evt.container.id)
-                    .unwrap_or(window_evt.container);
+        if let Event::Window(window_evt) = evt? {
+            let tree = i32.get_tree().await?;
+            let found = tree
+                .find_node(window_evt.container.id)
+                .unwrap_or(window_evt.container);
 
-                addr.do_send(WindowDataMsg {
-                    change: window_evt.change,
-                    container: found,
-                })
-            }
-            _ => { /* NOOP */ }
+            addr.do_send(WindowDataMsg {
+                change: window_evt.change,
+                container: found,
+            })
         }
     }
 

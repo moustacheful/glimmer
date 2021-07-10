@@ -97,11 +97,8 @@ impl Handler<WindowDataMsg> for GlimmerInstance {
 
         self.sender.send(message).unwrap();
 
-        match self.kill_handle {
-            Some(handle) => {
-                ctx.cancel_future(handle);
-            }
-            None => {}
+        if let Some(handle) = self.kill_handle {
+            ctx.cancel_future(handle);
         }
 
         self.kill_handle = Some(ctx.notify_later(DismountMsg {}, std::time::Duration::new(2, 0)));
