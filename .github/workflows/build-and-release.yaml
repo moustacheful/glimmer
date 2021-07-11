@@ -1,0 +1,29 @@
+on:
+  push:
+    tags: v*
+
+name: Build and Github release
+
+jobs:
+  build-and-release:
+    name: Build and release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Install deps
+        run: sudo apt-get install libgtk-3-dev
+
+      - name: Build
+        run: cargo build --release --locked
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: target/release/glimmer
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
