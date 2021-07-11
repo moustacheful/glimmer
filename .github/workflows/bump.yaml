@@ -1,0 +1,26 @@
+on:
+  push:
+    branches:
+      - master
+
+name: Bump
+
+jobs:
+  bump:
+    name: Bump
+    runs-on: ubuntu-latest
+    if: ${{ !startsWith(github.event.head_commit.message, '(cargo-release)') }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ssh-key: "${{ secrets.COMMIT_KEY }}"
+
+      - name: Git config
+        run: |
+          git config --global user.name 'Beep Boop'
+          git config --global user.email 'moustacheful@users.noreply.github.com'
+
+      - name: Cargo release
+        run: |
+          cargo install cargo-release
+          cargo release --skip-publish --no-confirm
