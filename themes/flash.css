@@ -1,0 +1,14 @@
+#box {
+  background: rgba(255, 255, 255, 0.2);
+  transition: background 2s ease, margin 0.2s ease;
+  margin: 10px;
+}
+
+.animate #box {
+  background: transparent;
+  margin: 0px;
+}
+
+#label {
+  opacity: 0;
+}

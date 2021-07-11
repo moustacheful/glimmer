@@ -18,21 +18,40 @@ Eventually I gave up and continued using vanilla i3 instead, but had this idea f
 
 ## Requirements
 
-- Rust v1.5x, currently only tested with **v1.53.0**
 - A compositor, since it literally draws windows on top of your windows.
 - GTK needs to be on your system to build this application, follow the instructions [here](https://crates.io/crates/gtk)
 
-Since the binaries are not distributed yet, and this hasn't been published as a crate either, the only way is to clone the repo and then run with
+For building:
+
+- Rust v1.5x, currently only tested with **v1.53.0**
 
 ```
 cargo build && cargo run
 ```
 
+## Installation
+
+#### Pre built binaries
+
+You can download a pre built-binary from the [releases page](https://github.com/moustacheful/glimmer/releases)
+
+#### Cargo
+
+Remember to read the requirements above!
+
+```
+cargo install glimmer
+```
+
 ## Running and customizing
 
-By default this application should use the `style.css` in the root of the repo, but you can provide your own using the `--styles` arg and providing a path to your own styles.
+```
+glimmer --styles=./path/to/your/theme.css
+```
 
 The css file dictates how the window decorations look like, and they have 2 elements to customize, `#box` which represents the boundaries of the window and `#label`, which has the window title. Additionally, there's an `.animate` class applied to the parent which can help triggering animations for both the box and label.
+
+There are some examples of this in the `themes` directory. Feel free to contribute more!
 
 #### Note that the CSS is not full spec, and you can see the supported properties by GTK [here](https://developer.gnome.org/gtk3/stable/chap-css-properties.html)
 
