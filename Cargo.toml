@@ -1,6 +1,6 @@
 [package]
 name = "glimmer"
-version = "0.0.2"
+version = "0.0.3-alpha.0"
 authors = ["Daniel Acuna <4857535+moustacheful@users.noreply.github.com>"]
 edition = "2018"
 description = "A tool for decorating i3/Sway focused windows"
