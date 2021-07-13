@@ -6,7 +6,7 @@ use std::collections::HashMap;
 
 use crate::actors::glimmer_instance::Geometry;
 
-const MAIN_WINDOW_TITLE: &str = "__GLIMMER_WINDOW__";
+pub const MAIN_WINDOW_TITLE: &str = "__GLIMMER_WINDOW__";
 
 pub fn setup(styles_path: String) {
     let css_provider = gtk::CssProvider::new();

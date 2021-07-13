@@ -1,3 +1,5 @@
+use super::glimmer_manager::{GlimmerManager, WindowDataMsg};
+use crate::gtk_utils;
 use actix::prelude::*;
 use std::io;
 use tokio_i3ipc::{
@@ -7,7 +9,6 @@ use tokio_i3ipc::{
 };
 use tokio_stream::StreamExt;
 
-use super::glimmer_manager::{GlimmerManager, WindowDataMsg};
 pub struct I3Ipc {}
 
 trait Find<T> {
@@ -51,10 +52,15 @@ async fn i3_subscribe() -> io::Result<()> {
     let mut listener = i3.listen();
     while let Some(evt) = listener.next().await {
         if let Event::Window(window_evt) = evt? {
+            let container = window_evt.container;
+            let name = container.name.clone().unwrap_or_default();
+
+            if name == gtk_utils::MAIN_WINDOW_TITLE {
+                continue;
+            }
+
             let tree = i32.get_tree().await?;
-            let found = tree
-                .find_node(window_evt.container.id)
-                .unwrap_or(window_evt.container);
+            let found = tree.find_node(container.id).unwrap_or(container);
 
             addr.do_send(WindowDataMsg {
                 change: window_evt.change,
