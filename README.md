@@ -2,7 +2,7 @@
 
 ## What
 
-A tool for decorating i3 (_should_ work with Sway too!) windows when they get focused, written in Rust.
+A tool for decorating i3 windows when they get focused, written in Rust.
 
 https://user-images.githubusercontent.com/4857535/124782646-61e90a80-df12-11eb-8930-a321ecffbee1.mp4
 
@@ -18,6 +18,7 @@ Eventually I gave up and continued using vanilla i3 instead, but had this idea f
 
 ## Requirements
 
+- i3 (Note that Sway is not currently supported)
 - A compositor, since it literally draws windows on top of your windows.
 - GTK needs to be on your system to build this application, follow the instructions [here](https://crates.io/crates/gtk)
 
