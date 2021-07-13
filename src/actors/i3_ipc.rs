@@ -56,6 +56,7 @@ async fn i3_subscribe() -> io::Result<()> {
             let name = container.name.clone().unwrap_or_default();
 
             if name == gtk_utils::MAIN_WINDOW_TITLE {
+                dbg!(name);
                 continue;
             }
 
