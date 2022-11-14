@@ -11,11 +11,14 @@ license = "MIT"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-gtk = "0.14.0"
-gdk = "0.14.0"
-cairo-rs = "0.14.0"
-glib = "0.14.0"
-tokio-i3ipc = "0.12.1"
+actix = "0.13"
+cairo-rs = "0.16.1"
+clap = { version = "4.0.18", features = ["derive"] }
+gdk = "0.16.0"
+glib = "0.16.2"
+gtk = "0.16.0"
+i3ipc-types = "0.15.0"
+swayipc = "3.0.1"
+swayipc-async = "2.0.1"
+tokio-i3ipc = "0.15.0"
 tokio-stream = "0.1.6"
-actix = "0.12"
-clap = "3.0.0-beta.2"

@@ -1,15 +1,13 @@
 use actix::prelude::*;
 use actors::glimmer_manager::AttachSenderMsg;
-use clap::{AppSettings, Clap};
+use clap::Parser;
 use std::thread;
 mod actors;
 mod gtk_utils;
 
-#[derive(Clap)]
-#[clap(version = "0.0.1")]
-#[clap(setting = AppSettings::ColoredHelp)]
+#[derive(clap::Parser, Debug)]
 struct Opts {
-    #[clap(short, long, default_value = "./style.css")]
+    #[arg(short, long, default_value = "./style.css")]
     styles: String,
 }
 

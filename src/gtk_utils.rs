@@ -55,12 +55,7 @@ pub fn build_window(label_string: &str, geometry: Geometry) -> Window {
     window.set_keep_above(true);
 
     window.connect_draw(|w, _c| {
-        let rect: RectangleInt = RectangleInt {
-            x: 0,
-            y: 0,
-            width: 0,
-            height: 0,
-        };
+        let rect: RectangleInt = RectangleInt::new(0, 0, 0, 0);
         let region: Region = Region::create_rectangle(&rect);
 
         w.window()
@@ -70,10 +65,10 @@ pub fn build_window(label_string: &str, geometry: Geometry) -> Window {
         gtk::Inhibit(false)
     });
 
-    let container = gtk::FixedBuilder::new().name("container").build();
-    let b = gtk::BoxBuilder::new().name("box").build();
+    let container = gtk::builders::FixedBuilder::new().name("container").build();
+    let b = gtk::builders::BoxBuilder::new().name("box").build();
 
-    let label = gtk::LabelBuilder::new()
+    let label = gtk::builders::LabelBuilder::new()
         .name("label")
         .label(label_string)
         .build();
