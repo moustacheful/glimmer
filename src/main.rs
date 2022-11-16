@@ -1,26 +1,37 @@
 use actix::prelude::*;
-use actors::glimmer_manager::AttachSenderMsg;
-use clap::{AppSettings, Clap};
+use actors::{glimmer_manager::AttachSenderMsg, wm_ipc::WindowManager};
+use clap::Parser;
 use std::thread;
 mod actors;
 mod gtk_utils;
 
-#[derive(Clap)]
-#[clap(version = "0.0.1")]
-#[clap(setting = AppSettings::ColoredHelp)]
+#[derive(clap::Parser, Debug)]
 struct Opts {
-    #[clap(short, long, default_value = "./style.css")]
+    #[arg(short, long, default_value = "./style.css")]
     styles: String,
+    #[clap(long)]
+    use_sway: bool,
 }
 
 fn main() {
     let opts = Opts::parse();
 
-    gtk::init().expect("Failed to initialize GTK.");
+    // x11 backend uses xwayland package
+    // it has better results than the wayland backend
+
+    // The following cannot be called before gdk::init()
+    // Most probably an oversight (https://github.com/gtk-rs/gtk3-rs/pull/791)
+    // gdk::set_allowed_backends("x11");
+
+    // Set env instead:
+    std::env::set_var("GDK_BACKEND", "x11");
+
+    gtk::init().expect("Failed to init GTK.");
+
     gtk_utils::setup(opts.styles);
 
     let sender = gtk_utils::handle_messages();
-
+    let sway = opts.use_sway;
     thread::spawn(move || {
         let system = System::new();
 
@@ -28,7 +39,14 @@ fn main() {
             let manager = actors::glimmer_manager::GlimmerManager::from_registry();
             manager.do_send(AttachSenderMsg { sender });
 
-            actors::i3_ipc::I3Ipc {}.start();
+            actors::wm_ipc::WmIPC {
+                wm: if sway {
+                    WindowManager::SWAY
+                } else {
+                    WindowManager::I3
+                },
+            }
+            .start();
         });
 
         system.run().unwrap();

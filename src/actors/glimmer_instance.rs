@@ -1,5 +1,5 @@
-use super::glimmer_manager::{GlimmerManager, WindowDataMsg};
-use crate::gtk_utils::{Messages, WindowShim};
+use super::glimmer_manager::{GlimmerManager, WindowDataMsgTrait, WindowDataMsgWrapper};
+use crate::gtk_utils::Messages;
 use actix::prelude::*;
 use glib::Sender;
 use tokio_i3ipc::event::WindowChange;
@@ -65,32 +65,15 @@ impl From<Rect> for Geometry {
     }
 }
 
-impl From<WindowDataMsg> for WindowShim {
-    fn from(window_data: WindowDataMsg) -> WindowShim {
-        let rect = window_data.container.rect;
-        WindowShim {
-            id: window_data.container.id,
-            label: window_data.container.name,
-            geometry: rect.into(),
-        }
-    }
-}
-
-impl From<WindowDataMsg> for usize {
-    fn from(window_data: WindowDataMsg) -> usize {
-        window_data.container.id
-    }
-}
-
-impl Handler<WindowDataMsg> for GlimmerInstance {
+impl Handler<WindowDataMsgWrapper> for GlimmerInstance {
     type Result = ();
 
-    fn handle(&mut self, msg: WindowDataMsg, ctx: &mut Context<Self>) {
-        let message: Messages = match msg.change {
-            WindowChange::Focus => Messages::Create(msg.into()),
-            WindowChange::Close => Messages::Destroy(msg.into()),
-            WindowChange::Move => Messages::Update(msg.into()),
-            WindowChange::FullscreenMode => Messages::Update(msg.into()),
+    fn handle(&mut self, msg: WindowDataMsgWrapper, ctx: &mut Context<Self>) {
+        let message: Messages = match msg.get_change() {
+            WindowChange::Focus => Messages::Create(msg.get_window_shim()),
+            WindowChange::Close => Messages::Destroy(msg.get_container_id()),
+            WindowChange::Move => Messages::Update(msg.get_window_shim()),
+            WindowChange::FullscreenMode => Messages::Update(msg.get_window_shim()),
 
             _m => Messages::None,
         };
