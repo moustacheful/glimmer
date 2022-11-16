@@ -48,8 +48,6 @@ impl Find<Node> for Node {
     }
 }
 
-// impl Find for Node {}
-
 async fn i3_subscribe() -> io::Result<()> {
     let addr = GlimmerManager::from_registry();
 

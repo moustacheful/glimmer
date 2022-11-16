@@ -1,5 +1,5 @@
 use actix::prelude::*;
-use actors::{glimmer_manager::AttachSenderMsg, i3_ipc::WindowManager};
+use actors::{glimmer_manager::AttachSenderMsg, wm_ipc::WindowManager};
 use clap::Parser;
 use std::thread;
 mod actors;
@@ -39,7 +39,7 @@ fn main() {
             let manager = actors::glimmer_manager::GlimmerManager::from_registry();
             manager.do_send(AttachSenderMsg { sender });
 
-            actors::i3_ipc::WmIPC {
+            actors::wm_ipc::WmIPC {
                 wm: if sway {
                     WindowManager::SWAY
                 } else {
