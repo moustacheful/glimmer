@@ -23,7 +23,7 @@ dependencies = [
  "pin-project-lite",
  "smallvec",
  "tokio",
- "tokio-util",
+ "tokio-util 0.6.10",
 ]
 
 [[package]]
@@ -408,7 +408,7 @@ dependencies = [
 
 [[package]]
 name = "glimmer"
-version = "0.0.3"
+version = "0.0.4-alpha.1"
 dependencies = [
  "actix",
  "cairo-rs",
@@ -513,9 +513,9 @@ dependencies = [
 
 [[package]]
 name = "i3ipc-types"
-version = "0.12.0"
+version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "898c201d200aefb7026818e12eb6cbe409aeb77a5a385b24c585eebfec64ce7a"
+checksum = "02f2ba260abda862b5d62cd7c8496d56da773737f5ca751f8ef501cedf8ada20"
 dependencies = [
  "serde",
  "serde_json",
@@ -1003,9 +1003,9 @@ dependencies = [
 
 [[package]]
 name = "tokio-i3ipc"
-version = "0.12.1"
+version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9cc09cf90c88436eaa4e68cda2f059684395f31eda564e2bdfd24c4b683cde6d"
+checksum = "0b1f23c8d7dd3256ff24928d2cba0277e8a40685a70882c2e9c01b394890abfa"
 dependencies = [
  "bytes",
  "i3ipc-types",
@@ -1013,7 +1013,7 @@ dependencies = [
  "serde_json",
  "tokio",
  "tokio-stream",
- "tokio-util",
+ "tokio-util 0.7.4",
 ]
 
 [[package]]
@@ -1053,12 +1053,46 @@ dependencies = [
 ]
 
 [[package]]
+name = "tokio-util"
+version = "0.7.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0bb2e075f03b3d66d8d8785356224ba688d2906a371015e225beeb65ca92c740"
+dependencies = [
+ "bytes",
+ "futures-core",
+ "futures-sink",
+ "pin-project-lite",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
 name = "toml"
 version = "0.5.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8d82e1a7758622a465f8cee077614c73484dac5b836c02ff6a40d5d1010324d7"
 dependencies = [
  "serde",
+]
+
+[[package]]
+name = "tracing"
+version = "0.1.37"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8ce8c33a8d48bd45d624a6e523445fd21ec13d3653cd51f681abf67418f54eb8"
+dependencies = [
+ "cfg-if",
+ "pin-project-lite",
+ "tracing-core",
+]
+
+[[package]]
+name = "tracing-core"
+version = "0.1.30"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "24eb03ba0eab1fd845050058ce5e616558e8f8d8fca633e6b163fe25c797213a"
+dependencies = [
+ "once_cell",
 ]
 
 [[package]]

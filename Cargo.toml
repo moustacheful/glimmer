@@ -1,6 +1,6 @@
 [package]
 name = "glimmer"
-version = "0.0.3"
+version = "0.0.4-alpha.1"
 authors = ["Daniel Acuna <4857535+moustacheful@users.noreply.github.com>"]
 edition = "2018"
 description = "A tool for decorating i3/Sway focused windows"
@@ -15,7 +15,7 @@ gtk = "0.14.0"
 gdk = "0.14.0"
 cairo-rs = "0.14.0"
 glib = "0.14.0"
-tokio-i3ipc = "0.12.1"
+tokio-i3ipc = "0.15.0"
 tokio-stream = "0.1.6"
 actix = "0.12"
 clap = { version = "4.0.26", features = ["derive"] }
