@@ -20,8 +20,10 @@ jobs:
           git config --global user.name 'Beep Boop'
           git config --global user.email 'moustacheful@users.noreply.github.com'
 
-      - name: Cargo release
+      - name: Create tag
         run: |
-          cargo login ${{ secrets.PUBLISH_KEY }}
-          cargo install cargo-release
-          cargo release --no-confirm
+          cargo install cargo-release@0.23.1
+          cargo release version patch --no-confirm --execute
+          cargo release commit --no-confirm --execute
+          cargo release tag --no-confirm --execute
+          cargo release push --no-confirm --execute

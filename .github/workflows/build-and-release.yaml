@@ -21,9 +21,15 @@ jobs:
       - name: Build
         run: cargo build --release --locked
 
-      - name: Release
+      - name: Create Github Release
         uses: softprops/action-gh-release@v1
         with:
           files: target/release/glimmer
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish crate
+        run: |
+          cargo login ${{ secrets.PUBLISH_KEY }}
+          cargo install cargo-release@0.23.1
+          cargo release publish --no-verify --no-confirm --execute
