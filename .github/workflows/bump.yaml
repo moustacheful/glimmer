@@ -23,7 +23,7 @@ jobs:
       - name: Create tag
         run: |
           cargo install cargo-release@0.23.1
-          cargo release version patch --no-confirm --no-verify --execute
-          cargo release commit --no-confirm --no-verify --execute
-          cargo release tag --no-confirm --no-verify --execute
-          cargo release push --no-confirm --no-verify --execute
+          cargo release version patch --no-confirm --execute
+          cargo release commit --no-confirm --execute
+          cargo release tag --no-confirm --execute
+          cargo release push --no-confirm --execute
