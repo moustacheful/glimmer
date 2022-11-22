@@ -9,7 +9,7 @@ jobs:
   bump:
     name: Bump
     runs-on: ubuntu-latest
-    if: ${{ !startsWith(github.event.head_commit.message, '(cargo-release)') }}
+    if: "${{ !startsWith(github.event.head_commit.message, 'chore: Release') }}"
     steps:
       - uses: actions/checkout@v3
         with:
@@ -20,10 +20,8 @@ jobs:
           git config --global user.name 'Beep Boop'
           git config --global user.email 'moustacheful@users.noreply.github.com'
 
-      - name: Create tag
+      - name: Release
         run: |
+          cargo login ${{ secrets.PUBLISH_KEY }}
           cargo install cargo-release@0.23.1
-          cargo release version patch --no-confirm --execute
-          cargo release commit --no-confirm --execute
-          cargo release tag --no-confirm --execute
-          cargo release push --no-confirm --execute
+          cargo release patch --no-confirm --no-verify --execute
