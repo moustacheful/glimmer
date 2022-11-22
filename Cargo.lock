@@ -408,7 +408,7 @@ dependencies = [
 
 [[package]]
 name = "glimmer"
-version = "0.0.4"
+version = "0.0.6-alpha.1"
 dependencies = [
  "actix",
  "cairo-rs",
