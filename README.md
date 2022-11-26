@@ -54,7 +54,7 @@ The css file dictates how the window decorations look like, and they have 2 elem
 
 There are some examples of this in the `themes` directory. Feel free to contribute more!
 
-#### Note that the CSS is not full spec, and you can see the supported properties by GTK [here](https://developer.gnome.org/gtk3/stable/chap-css-properties.html)
+#### Note that the CSS is not full spec, and you can see the supported properties by GTK [here](https://docs.gtk.org/gtk3/css-properties.html)
 
 A simple example for this, animated using transitions:
 
